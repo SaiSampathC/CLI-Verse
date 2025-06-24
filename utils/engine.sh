@@ -1,53 +1,91 @@
-#!/bin/bash
+# utils/engine.sh
 
-save_file="assets/save/progress.log"
+source utils/ui.sh
 
-init_save_file() {
-    mkdir -p assets/save
-    [[ ! -f "$save_file" ]] && echo "missions_completed=0" > "$save_file"
-}
+PLANETS=(
+  "git-labyrinth"
+  "docktar"
+  "firewall-x"
+  "cron-crater"
+  "perm-sigma"
+)
 
-load_progress() {
-    source "$save_file"
-    echo -e "${BLUE}>> Missions Completed: ${GREEN}${missions_completed}${RESET}"
-}
+start_cli_verse() {
+  print_header "CLI-VERSE: Cosmic Command Console"
 
-complete_mission() {
-    ((missions_completed++))
-    echo "missions_completed=$missions_completed" > "$save_file"
-    echo -e "${YELLOW}>> Mission status: ${GREEN}COMPLETE${RESET}"
+  XP_FILE="assets/save/progress.log"
+  if [[ -f "$XP_FILE" ]]; then
+    XP=$(grep "XP=" "$XP_FILE" | cut -d '=' -f2)
+    show_rank "$XP"
+  fi
+
+  while true; do
+    echo -e "\n${CYAN}🌌 Available Planets:${RESET}"
+    select planet in "${PLANETS[@]}" "Exit"; do
+      if [[ "$planet" == "Exit" ]]; then
+        echo -e "${YELLOW}Exiting CLI-VERSE. Until next mission...${RESET}"
+        exit 0
+      elif [[ -n "$planet" ]]; then
+        travel_to "$planet"
+        break
+      else
+        echo -e "${RED}Invalid choice. Choose a number from the list.${RESET}"
+      fi
+    done
+  done
 }
 
 travel_to() {
-    local planet="$1"
-    case $planet in
-        git-labyrinth)
-            bash planets/git-labyrinth.sh
-            ;;
-        docktar)
-            bash planets/docktar.sh
-            ;;
-        firewall-x)
-            bash planets/firewall-x.sh
-            ;;
-        *)
-            glitch_error "Unknown planet '$planet'"
-            ;;
-    esac
+  local planet="$1"
+  case $planet in
+    git-labyrinth)
+      bash planets/git-labyrinth.sh
+      ;;
+    docktar)
+      bash planets/docktar.sh
+      ;;
+    firewall-x)
+      bash planets/firewall-x.sh
+      ;;
+    cron-crater)
+      bash planets/cron-crater.sh
+      ;;
+    perm-sigma)
+      bash planets/perm-sigma.sh
+      ;;
+    *)
+      glitch_error "Unknown planet '$planet'"
+      ;;
+  esac
 }
 
-load_map() {
-    divider
-    cat assets/map.txt
-    divider
+complete_mission() {
+  echo -e "${GREEN}>> Mission status: COMPLETE${RESET}"
+  XP_FILE="assets/save/progress.log"
+
+  if [[ -f "$XP_FILE" ]]; then
+    XP=$(grep "XP=" "$XP_FILE" | cut -d '=' -f2)
+    NEW_XP=$((XP + 10))
+    echo "XP=$NEW_XP" > "$XP_FILE"
+    echo -e "${YELLOW}>> Gained 10 XP! Total: $NEW_XP XP${RESET}"
+    show_rank "$NEW_XP"
+  fi
 }
 
-show_intro() {
-    init_save_file
-    print_header "BOOTING CLI-VERSE SYSTEM CORE"
-    glitch_loading
-    load_progress
-    echo ""
-    flicker_text ">>> WELCOME, CADET. TYPE A PLANET TO TRAVEL."
+show_rank() {
+  local xp=$1
+  local rank=""
+
+  if (( xp < 30 )); then
+    rank="Shell Cadet"
+  elif (( xp < 60 )); then
+    rank="Kernel Operative"
+  elif (( xp < 100 )); then
+    rank="Root Architect"
+  else
+    rank="SysGod"
+  fi
+
+  echo -e "${BLUE}>> Rank: $rank${RESET}"
 }
 

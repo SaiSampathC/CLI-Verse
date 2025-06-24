@@ -2,6 +2,8 @@
                FIREWALL-X              GIT-LABYRINTH
           *        *        *         *       *
      DOCKTAR       *        *         *      *
+        *       CRON-CRATER        *
+
 
                  CLI-VERSE GALAXY
         Type the planet name to travel

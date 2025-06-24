@@ -1,3 +1,8 @@
+![Shell Script](https://img.shields.io/badge/Built%20With-Bash-blue)
+![Game](https://img.shields.io/badge/Genre-Terminal%20RPG-purple)
+![XP System](https://img.shields.io/badge/Feature-XP%20Ranking-yellow)
+
+
 # 🌌 CLI-VERSE.sh
 
 **A hackerpunk terminal game for learning Linux and DevOps — one planet at a time.**  

@@ -8,9 +8,10 @@
 source utils/ui.sh
 source utils/engine.sh
 
-clear
-show_intro
-load_map
+start_cli_verse
+
+#show_intro
+#load_map
 
 while true; do
     echo -ne "\n🚀 Enter destination (planet name or 'exit'): "
